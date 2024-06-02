@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class AnimationQueue : MonoBehaviour
 {
@@ -52,17 +51,30 @@ public class AnimationQueue : MonoBehaviour
         return false;
     }
 
-    public void EnqueueTick(ScoreTicker ticker, int newValue, float duration) {
-        EnqueueTicks(new[] { (ticker, newValue, duration)});
+    public void EnqueueTally(Graph graph, ScoreTicker roundScoreTicker, int finalRoundScore, ScoreTicker totalScoreTicker, int finalTotalScore) {
+        EnqueueLineScoreMove(graph, roundScoreTicker.transform.position);
+        // EnqueueHideLineScores
+
+        EnqueueTick(roundScoreTicker, finalRoundScore, 0.5f);
+        EnqueuePause(0.5f);
+        (ScoreTicker, int, float) roundTickDown = (roundScoreTicker, 0, 0.5f);
+        (ScoreTicker, int, float) totalTickUp = (totalScoreTicker, finalTotalScore, 0.5f);
+        EnqueueTicks(new [] {roundTickDown, totalTickUp});
+        EnqueueClearTicker(roundScoreTicker);
+        EnqueuePause(1.0f);
     }
 
     public void EnqueueTicks((ScoreTicker, int, float)[] tickEvents) {
         List<QueueEvent> events = new List<QueueEvent>();
         for (int i = 0; i < tickEvents.Length; i++) {
-            (ScoreTicker ticker, int newValue, float duration) = tickEvents[i];
-            events.Add(new TickerEvent(ticker, newValue, duration));
+            (ScoreTicker ticker, int total, float duration) = tickEvents[i];
+            events.Add(new TickerEvent(ticker, total, duration));
         }
         queue.Enqueue(events);
+    }
+
+    public void EnqueueTick(ScoreTicker ticker, int newValue, float duration) {
+        EnqueueTicks(new[] { (ticker, newValue, duration)});
     }
 
     public void EnqueueClearTicker(ScoreTicker ticker) {
@@ -75,10 +87,18 @@ public class AnimationQueue : MonoBehaviour
         queue.Enqueue(events);
     }
 
+    public void EnqueueLineScoreMove(Graph graph, Vector3 position) {
+        return;
+    }
 
-
-    public void EnqueueMovesToPoint(List<Transform> transforms, Vector3 newLocation, float duration) {
-
+    internal void EnqueueShowLineScores(Graph graph) {
+        List<QueueEvent> tickerEvents = new List<QueueEvent>();
+        foreach (ScoreTicker ticker in graph.GetLineTickers()) {
+            if (ticker != null && !ticker.Revealed) {
+                tickerEvents.Add(new TickerEvent(ticker));
+            }
+        }
+        queue.Enqueue(tickerEvents);
     }
 }
 
@@ -113,30 +133,30 @@ internal class TickerEvent : QueueEvent {
 
     internal TickerEvent(ScoreTicker ticker): base(0.0f) {
         this.ticker = ticker;
-        this.function = Clear;
+        this.function = ToggleVisible;
     }
 
     public IEnumerator Tick() {
         return ticker.TickTo(value, duration);
     }
 
-    public IEnumerator Clear() {
-        return ticker.ClearTicker();
+    public IEnumerator ToggleVisible() {
+        return ticker.ToggleVisible();
     }
 }
 
-// internal class LineEvent : QueueEvent {
+internal class LineEvent : QueueEvent {
 
-//     public Line line;
+    public Line line;
 
-//     internal LineEvent(Line targetLine) : base() {
-//         function = Animate;
-//         duration = 0.5f;
-//         line = targetLine;
-//     }
+    internal LineEvent(Line targetLine) : base(0.0f) {
+        function = Animate;
+        duration = 0.5f;
+        line = targetLine;
+    }
 
-//     public IEnumerator Animate() {
-//         yield return new WaitForSeconds(2);
-//         Debug.Log("Line event finished!");
-//     }
-// }
+    public IEnumerator Animate() {
+        yield return new WaitForSeconds(2);
+        Debug.Log("Line event finished!");
+    }
+}

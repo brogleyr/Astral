@@ -2,20 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEditor;
 
 
 public class ScoreTicker : MonoBehaviour
 {
 
-    bool revealed = false;
-    bool ticking;
+    public bool Revealed { get; private set; } = false;
     
-    int currentTotal = 0;
-    int startTotal = 0;
-    int targetTotal = 0;
-    float timer = 0.0f;
-    float timerDuration = 0.0f;
+    protected bool ticking;
+    protected int currentTotal = 0;
+    protected int startTotal = 0;
+    protected int targetTotal = 0;
+    protected float timer = 0.0f;
+    protected float timerDuration = 0.0f;
 
     TextMeshProUGUI scoreGUI;
 
@@ -24,7 +23,7 @@ public class ScoreTicker : MonoBehaviour
     }
 
     void Update() {
-        if (revealed && currentTotal != 0) {
+        if (Revealed && currentTotal != 0) {
             scoreGUI.text = currentTotal.ToString();
         }
         else {
@@ -43,7 +42,7 @@ public class ScoreTicker : MonoBehaviour
     }
 
     public IEnumerator TickTo(int newTotalScore, float duration) {
-        revealed = true;
+        Revealed = true;
         startTotal = currentTotal;
         targetTotal = newTotalScore;
         timerDuration = duration;
@@ -52,9 +51,20 @@ public class ScoreTicker : MonoBehaviour
         yield return null;
     }
 
+    public IEnumerator SetValue(int value) {
+        this.currentTotal = value;
+        yield return null;
+    }
+
     public IEnumerator ClearTicker() {
         currentTotal = 0;
-        revealed = false;
+        Revealed = false;
+        yield return null;
+    }
+
+    internal IEnumerator ToggleVisible()
+    {
+        Revealed = !Revealed;
         yield return null;
     }
 }

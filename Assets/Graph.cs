@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Graph : MonoBehaviour
 {
@@ -34,18 +36,6 @@ public class Graph : MonoBehaviour
         lines = new List<Line>();
     }
 
-    public void DisplayScores(bool display) {
-        foreach (Line line in lines) {
-            line.DisplayScore();
-        }
-    }
-
-    public void MoveScoresToTotal(Vector3 finalPosition, float time) {
-        foreach (Line line in lines) {
-            line.MoveScoreToTotal(finalPosition, time);
-        }
-    }
-
     public void ClearCurrLine() {
         if (currLine == null) {
             return;
@@ -60,7 +50,6 @@ public class Graph : MonoBehaviour
         }
         stars = new List<Star>();
     }
-    
 
     public void StarEvent(Star star) {
 
@@ -129,6 +118,14 @@ public class Graph : MonoBehaviour
             sum += line.Score;
         }
         return sum;
+    }
+
+    public List<ScoreTicker> GetLineTickers() {
+        List<ScoreTicker> lineTickers = new List<ScoreTicker>();
+        foreach (Line line in lines) {
+            lineTickers.Add(line.transform.GetChild(0).GetComponent<ScoreTicker>());
+        }
+        return lineTickers;
     }
 
     public int GetLinesRemaining() {

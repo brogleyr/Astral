@@ -5,7 +5,7 @@ using UnityEngine;
 public class Line : MonoBehaviour
 {
     public Star[] Stars { get; set; } = new Star[2];
-    public int Score { get; set; } = 0;
+    public int Score { get; set; } = 1;
 
     Vector3[] positions = new Vector3[2];
     Vector3 scorePosition;

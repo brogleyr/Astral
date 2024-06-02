@@ -694,7 +694,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 720c2617d7e2bd34e9aa53d4ce16a71d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreUI: {fileID: 992070672}
+  totalScoreUI: {fileID: 992070672}
   roundScoreUI: {fileID: 1931510751}
   all_bonuses: []
 --- !u!114 &1431328058
