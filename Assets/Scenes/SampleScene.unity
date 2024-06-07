@@ -621,8 +621,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9417a4111fd683b45bce00527729e166, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graphSize: 8
-  maxLines: 6
+  graphSize: 2
+  maxLines: 1
 --- !u!4 &1431328053
 Transform:
   m_ObjectHideFlags: 0

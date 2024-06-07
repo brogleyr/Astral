@@ -60,7 +60,10 @@ public class Line : MonoBehaviour
     }
 
     void PlaceScoreInCenter() {
-        Vector3 center = ((positions[0] - positions[1]) * 0.5f) + positions[1];
-        transform.GetChild(0).position = new Vector3(center.x, center.y, 0f);
+        Vector3 difference = positions[0] - positions[1];
+        Vector3 center = (difference * 0.5f) + positions[1];
+        float offsetMagnitude = 0.35f;
+        Vector3 offset = Vector3.Normalize(new Vector3(difference.y, -difference.x, 0f)) * offsetMagnitude;
+        transform.GetChild(0).position = new Vector3(center.x + offset.x, center.y + offset.y, 0f);
     }
 }

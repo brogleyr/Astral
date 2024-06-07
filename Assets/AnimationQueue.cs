@@ -52,7 +52,10 @@ public class AnimationQueue : MonoBehaviour
     }
 
     public void EnqueueTally(Graph graph, ScoreTicker roundScoreTicker, int finalRoundScore, ScoreTicker totalScoreTicker, int finalTotalScore) {
-        EnqueueLineScoreMove(graph, roundScoreTicker.transform.position);
+        
+        EnqueuePause(0.5f);
+        EnqueueLineScoreMove(graph, new Vector3(0f, 3.5f, 0f), 0.5f);
+        Debug.Log(Camera.main.ViewportToWorldPoint(roundScoreTicker.transform.position));
         // EnqueueHideLineScores
 
         EnqueueTick(roundScoreTicker, finalRoundScore, 0.5f);
@@ -87,8 +90,17 @@ public class AnimationQueue : MonoBehaviour
         queue.Enqueue(events);
     }
 
-    public void EnqueueLineScoreMove(Graph graph, Vector3 position) {
-        return;
+    public void EnqueueLineScoreMove(Graph graph, Vector3 position, float duration) {
+        List<QueueEvent> tickerMoves = new List<QueueEvent>();
+        List<QueueEvent> tickerHides = new List<QueueEvent>();
+        foreach (LineTicker ticker in graph.GetLineTickers()) {
+            if (ticker != null) {
+                tickerMoves.Add(new TickerMove(ticker, position, duration));
+                tickerHides.Add(new TickerEvent(ticker));
+            }
+        }
+        queue.Enqueue(tickerMoves);
+        queue.Enqueue(tickerHides);
     }
 
     internal void EnqueueShowLineScores(Graph graph) {
@@ -123,6 +135,7 @@ internal class TickerEvent : QueueEvent {
 
     public ScoreTicker ticker;
     int value;
+    Vector3 newPosition;
 
     internal TickerEvent(ScoreTicker ticker, int newValue, float duration): base(duration) {
         this.function = Tick;
@@ -142,6 +155,21 @@ internal class TickerEvent : QueueEvent {
 
     public IEnumerator ToggleVisible() {
         return ticker.ToggleVisible();
+    }
+}
+
+internal class TickerMove : QueueEvent {
+    LineTicker ticker;
+    Vector3 destination;
+    
+    internal TickerMove(LineTicker ticker, Vector3 newPosition, float duration): base(duration) {
+        this.ticker = ticker;
+        this.function = Move;
+        this.destination = newPosition;
+    }
+
+    public IEnumerator Move() {
+        return ticker.MoveToPoint(destination, duration);
     }
 }
 
