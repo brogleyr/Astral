@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class AnimationQueue : MonoBehaviour
 {
-
+    
     private Queue<List<QueueEvent>> queue = new Queue<List<QueueEvent>>();
     private bool queueRunning = false;
     private List<QueueEvent> activeSet;
@@ -54,8 +54,10 @@ public class AnimationQueue : MonoBehaviour
     public void EnqueueTally(Graph graph, ScoreTicker roundScoreTicker, int finalRoundScore, ScoreTicker totalScoreTicker, int finalTotalScore) {
         
         EnqueuePause(0.5f);
+
+        // TODO: Fix score movement in different aspect ratios
+
         EnqueueLineScoreMove(graph, new Vector3(0f, 3.5f, 0f), 0.5f);
-        Debug.Log(Camera.main.ViewportToWorldPoint(roundScoreTicker.transform.position));
         // EnqueueHideLineScores
 
         EnqueueTick(roundScoreTicker, finalRoundScore, 0.5f);

@@ -6,28 +6,34 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
 
+    public static ScoreManager Instance { get; private set; }
+
     public int TotalScore { get; set; } = 0;
 
     [SerializeField]
     ScoreTicker totalScoreUI, roundScoreUI;
 
-    List<Bonus> active_bonuses = new List<Bonus>();
-    public List<Bonus> all_bonuses = new List<Bonus>();
-
+    [SerializeField]
     AnimationQueue animationQueue;
 
-    private void Start() {
-        animationQueue = GetComponent<AnimationQueue>();
+    void Awake() {
+        if (Instance != null && Instance != this) { 
+            Destroy(this);
+        } 
+        else {
+            Instance = this;
+        }
     }
 
     public void ScoreGraph(Graph graph) {
         // n-m+f=2.
 
         // Display all line scores
-        graph.ClearCurrLine();
         animationQueue.EnqueueShowLineScores(graph);
 
         //Apply bonuses to lines
+        BonusManager.Instance.CalculateBonuses(graph);
+
         int lineScore = graph.TotalLineScore();
 
         // int starCount = graph.StarCount();

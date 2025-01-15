@@ -40,8 +40,13 @@ public class GameManager : MonoBehaviour
     }
 
     void Count() {
+        if (GetComponent<Graph>().IsEmpty()) {
+            return;
+        }
         state = GameState.COUNT;
         // ScoreGraph starts an animation that will trigger when finished
+        GetComponent<Graph>().CountLock();
+
         GetComponent<ScoreManager>().ScoreGraph(GetComponent<Graph>());
     }
 

@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class Graph : MonoBehaviour
 {
@@ -10,7 +10,11 @@ public class Graph : MonoBehaviour
     List<Star> stars = new List<Star>();
     Line currLine = null;
 
+    bool locked = false;
+
     int maxLines = 1;
+
+    GraphSearch graphSearch;
 
     public void NewGraph(int size, int maxLines) {
         ClearCurrLine();
@@ -18,6 +22,16 @@ public class Graph : MonoBehaviour
         ClearStars();
         this.stars = StarSpawner.Instance.SpawnStarMap(size);
         this.maxLines = maxLines;
+        locked = false;
+    }
+
+    public bool IsEmpty() {
+        return !lines.Any();
+    }
+
+    public void CountLock() {
+        ClearCurrLine();
+        locked = true;
     }
 
     public void ClearEvent() {
@@ -53,7 +67,7 @@ public class Graph : MonoBehaviour
 
     public void StarEvent(Star star) {
 
-        if (lines.Count >= maxLines) {
+        if (locked || lines.Count >= maxLines) {
             return;
         }
 
@@ -62,15 +76,11 @@ public class Graph : MonoBehaviour
             return;
         }
 
-        if (currLine.Stars[0] == star) {
-            return;
-        }
-
-        if (LineAlreadyExists(star, currLine.Stars[0])) {
-            return;
-        }
-
-        if (LineIntersects(star, currLine.Stars[0])) {
+        if (
+            currLine.Stars[0] == star 
+            || LineAlreadyExists(star, currLine.Stars[0])  
+            || LineIntersects(star, currLine.Stars[0])
+        ) {
             return;
         }
 
@@ -153,5 +163,12 @@ public class Graph : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public List<List<Line>> FindSequence(List<Star.StarColor> colorSequence) {
+        if (graphSearch == null) {
+            graphSearch = new GraphSearch(lines, stars);
+        }
+        return graphSearch.FindSequence(colorSequence);
     }
 }
