@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8094394789135386095}
   - component: {fileID: 1604117304740245703}
   - component: {fileID: 5912549315827889678}
+  - component: {fileID: 1323382629761350277}
   m_Layer: 0
   m_Name: Star
   m_TagString: Untagged
@@ -137,3 +138,15 @@ MonoBehaviour:
   blueChance: 0.33333334
   spriteAtlas: {fileID: 100100200, guid: 67300befd5d17614da75fa5d106ce85f, type: 3}
   Graph: {fileID: 0}
+--- !u!114 &1323382629761350277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2188828759263992390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3efc816c82d5bfa4197bad522d48d9aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

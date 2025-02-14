@@ -20,22 +20,17 @@ public class Star : MonoBehaviour
     public List<Line> Lines { get; set; } = new List<Line>();
 
     void Start() {
-        int spriteCount = spriteAtlas.spriteCount;
-        Sprite[] sprites = new Sprite[spriteCount];
-        spriteAtlas.GetSprites(sprites);
-        GetComponent<SpriteRenderer>().sprite = sprites[Random.Range(0, spriteCount)];
+        // float colorPick = Random.value;
+        // if (colorPick < redChance) {
+        //     GetComponent<SpriteRenderer>().color = new Color(1f, 0.7f, 0.7f, 1f);
+        //     Color = StarColor.RED;
+        // }
+        // else if (colorPick < blueChance + redChance) {
+        //     GetComponent<SpriteRenderer>().color = new Color(0.7f, 0.7f, 1f, 1f);
+        //     Color  = StarColor.BLUE;
+        // }
 
-        float colorPick = Random.value;
-        if (colorPick < redChance) {
-            GetComponent<SpriteRenderer>().color = new Color(1f, 0.7f, 0.7f, 1f);
-            Color = StarColor.RED;
-        }
-        else if (colorPick < blueChance + redChance) {
-            GetComponent<SpriteRenderer>().color = new Color(0.7f, 0.7f, 1f, 1f);
-            Color  = StarColor.BLUE;
-        }
-
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Random.Range(0f, 360f));
+        // transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Random.Range(-36f, 36f));
     }
 
     public bool Matches(StarColor matchColor) {
